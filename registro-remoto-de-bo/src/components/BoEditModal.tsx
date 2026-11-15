@@ -361,8 +361,8 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="flex max-h-[min(92dvh,920px)] w-[calc(100%-1.5rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl sm:p-0">
+          <DialogHeader className="shrink-0 space-y-1.5 border-b px-4 py-4 text-left sm:px-6">
             <DialogTitle>
               Editar B.O. - {bo?.id.toString().substring(0, 8)}
             </DialogTitle>
@@ -373,14 +373,15 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
           <form
             noValidate
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-6 p-1"
+            className="flex min-h-0 flex-1 flex-col"
           >
+            <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 py-4 sm:px-6">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+              <h3 className="border-b border-gray-200 pb-2 text-base font-semibold text-gray-800 sm:text-lg">
                 Dados da Ocorrência
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="type_of_occurrence">Tipo de Ocorrência</Label>
                   <Controller
                     name="type_of_occurrence"
@@ -390,7 +391,7 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger id="type_of_occurrence">
+                        <SelectTrigger id="type_of_occurrence" className="w-full">
                           <SelectValue placeholder="Selecione o tipo" />
                         </SelectTrigger>
                         <SelectContent>
@@ -409,13 +410,14 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="date_and_time_of_event">
                     Data e Hora do Evento
                   </Label>
                   <Input
                     id="date_and_time_of_event"
                     type="datetime-local"
+                    className="w-full min-w-0"
                     {...register("date_and_time_of_event")}
                   />
                   {errors.date_and_time_of_event && (
@@ -424,10 +426,11 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5 sm:col-span-2 lg:col-span-1">
                   <Label htmlFor="place_of_the_fact">Local da Ocorrência</Label>
                   <Input
                     id="place_of_the_fact"
+                    className="w-full min-w-0"
                     {...register("place_of_the_fact")}
                   />
                   {errors.place_of_the_fact && (
@@ -437,10 +440,10 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                   )}
                 </div>
               </div>
-              <div>
-                <div className="flex justify-between items-center mb-2">
+              <div className="min-w-0">
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                   <Label htmlFor="transcription">Relato dos Fatos</Label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-2">
                     {!isRecording ? (
                       <Button
                         type="button"
@@ -522,33 +525,42 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+              <h3 className="border-b border-gray-200 pb-2 text-base font-semibold text-gray-800 sm:text-lg">
                 Dados do Requerente
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="full_name">Nome Completo</Label>
-                  <Input id="full_name" {...register("full_name")} />
+                  <Input
+                    id="full_name"
+                    className="w-full min-w-0"
+                    {...register("full_name")}
+                  />
                   {errors.full_name && (
                     <p className="text-sm text-red-600 mt-1">
                       {errors.full_name.message}
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="cpf_or_rg">CPF ou RG</Label>
-                  <Input id="cpf_or_rg" {...register("cpf_or_rg")} />
+                  <Input
+                    id="cpf_or_rg"
+                    className="w-full min-w-0"
+                    {...register("cpf_or_rg")}
+                  />
                   {errors.cpf_or_rg && (
                     <p className="text-sm text-red-600 mt-1">
                       {errors.cpf_or_rg.message}
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="date_of_birth">Data de Nascimento</Label>
                   <Input
                     id="date_of_birth"
                     type="date"
+                    className="w-full min-w-0"
                     {...register("date_of_birth")}
                   />
                   {errors.date_of_birth && (
@@ -557,7 +569,7 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="gender">Gênero</Label>
                   <Controller
                     name="gender"
@@ -567,7 +579,7 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger id="gender">
+                        <SelectTrigger id="gender" className="w-full">
                           <SelectValue placeholder="Selecione..." />
                         </SelectTrigger>
                         <SelectContent>
@@ -586,16 +598,20 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="nacionalidade">Nacionalidade</Label>
-                  <Input id="nacionalidade" {...register("nationality")} />
+                  <Input
+                    id="nacionalidade"
+                    className="w-full min-w-0"
+                    {...register("nationality")}
+                  />
                   {errors.nationality && (
                     <p className="text-sm text-red-600 mt-1">
                       {errors.nationality.message}
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="marital_status">Estado Civil</Label>
                   <Controller
                     name="marital_status"
@@ -605,7 +621,7 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger id="marital_status">
+                        <SelectTrigger id="marital_status" className="w-full">
                           <SelectValue placeholder="Selecione..." />
                         </SelectTrigger>
                         <SelectContent>
@@ -624,30 +640,39 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="profession">Profissão</Label>
-                  <Input id="profession" {...register("profession")} />
+                  <Input
+                    id="profession"
+                    className="w-full min-w-0"
+                    {...register("profession")}
+                  />
                   {errors.profession && (
                     <p className="text-sm text-red-600 mt-1">
                       {errors.profession.message}
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5 sm:col-span-2">
                   <Label htmlFor="full_address">Endereço Completo</Label>
-                  <Input id="full_address" {...register("full_address")} />
+                  <Input
+                    id="full_address"
+                    className="w-full min-w-0"
+                    {...register("full_address")}
+                  />
                   {errors.full_address && (
                     <p className="text-sm text-red-600 mt-1">
                       {errors.full_address.message}
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="phone_or_cell_phone">
                     Telefone / Celular
                   </Label>
                   <Input
                     id="phone_or_cell_phone"
+                    className="w-full min-w-0"
                     {...register("phone_or_cell_phone")}
                   />
                   {errors.phone_or_cell_phone && (
@@ -656,16 +681,21 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" {...register("email")} />
+                  <Input
+                    id="email"
+                    type="email"
+                    className="w-full min-w-0"
+                    {...register("email")}
+                  />
                   {errors.email && (
                     <p className="text-sm text-red-600 mt-1">
                       {errors.email.message}
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <Label htmlFor="relationship_with_the_fact">
                     Relação com o Fato
                   </Label>
@@ -677,7 +707,10 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger id="relationship_with_the_fact">
+                        <SelectTrigger
+                          id="relationship_with_the_fact"
+                          className="w-full"
+                        >
                           <SelectValue placeholder="Selecione..." />
                         </SelectTrigger>
                         <SelectContent>
@@ -698,14 +731,19 @@ export const BoEditModal = ({ bo, isOpen, onClose }: BoEditModalProps) => {
                 </div>
               </div>
             </div>
+            </div>
 
-            <DialogFooter className="pt-4">
+            <DialogFooter className="shrink-0 flex-col-reverse gap-2 border-t px-4 py-4 sm:flex-row sm:px-6">
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button type="button" variant="secondary" className="w-full sm:w-auto">
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={isPending || isTranscribing}>
+              <Button
+                type="submit"
+                disabled={isPending || isTranscribing}
+                className="w-full sm:w-auto"
+              >
                 {isPending || isTranscribing
                   ? "Salvando..."
                   : "Salvar Alterações"}

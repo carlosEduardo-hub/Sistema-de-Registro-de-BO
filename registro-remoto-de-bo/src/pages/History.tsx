@@ -406,12 +406,13 @@ export default function History() {
                                 )}
                               </TableCell>
                               <TableCell className="text-right">
-                                <div className="flex items-center justify-end gap-0.5">
+                                <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
                                         variant="ghost"
                                         size="icon"
+                                        className="h-9 w-9 shrink-0"
                                         aria-label="Enviar pendente"
                                         disabled={
                                           isSyncingOne === p.localId ||
@@ -479,6 +480,7 @@ export default function History() {
                                       <Button
                                         variant="ghost"
                                         size="icon"
+                                        className="h-9 w-9 shrink-0"
                                         aria-label="Apagar pendente"
                                         disabled={
                                           isSyncingOne === p.localId ||
@@ -599,18 +601,22 @@ export default function History() {
                         <Table className="table-fixed w-full">
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="hidden w-[12%] lg:table-cell">
+                              <TableHead className="hidden w-[10%] lg:table-cell">
                                 ID
                               </TableHead>
-                              <TableHead className="w-[28%]">Nome</TableHead>
-                              <TableHead className="w-[18%]">Tipo</TableHead>
-                              <TableHead className="hidden w-[22%] xl:table-cell">
+                              <TableHead className="w-[34%] sm:w-[30%]">
+                                Nome
+                              </TableHead>
+                              <TableHead className="w-[26%] sm:w-[22%]">
+                                Tipo
+                              </TableHead>
+                              <TableHead className="hidden w-[18%] xl:table-cell">
                                 Local
                               </TableHead>
                               <TableHead className="hidden w-[12%] xl:table-cell">
                                 Registro
                               </TableHead>
-                              <TableHead className="w-[22%] text-right">
+                              <TableHead className="w-[40%] text-right sm:w-[28%] lg:w-[24%]">
                                 Ações
                               </TableHead>
                             </TableRow>
@@ -634,10 +640,11 @@ export default function History() {
                                   <Skeleton className="h-4 w-16" />
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  <div className="flex items-center justify-end gap-1">
-                                    <Skeleton className="h-8 w-8" />
-                                    <Skeleton className="h-8 w-8" />
-                                    <Skeleton className="h-8 w-8" />
+                                  <div className="flex items-center justify-end gap-1.5 sm:gap-2">
+                                    <Skeleton className="h-9 w-9" />
+                                    <Skeleton className="h-9 w-9" />
+                                    <Skeleton className="h-9 w-9" />
+                                    <Skeleton className="h-9 w-9" />
                                   </div>
                                 </TableCell>
                               </TableRow>
@@ -687,18 +694,22 @@ export default function History() {
                         <Table className="table-fixed w-full">
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="hidden w-[12%] lg:table-cell">
+                              <TableHead className="hidden w-[10%] lg:table-cell">
                                 ID
                               </TableHead>
-                              <TableHead className="w-[28%]">Nome</TableHead>
-                              <TableHead className="w-[18%]">Tipo</TableHead>
-                              <TableHead className="hidden w-[22%] xl:table-cell">
+                              <TableHead className="w-[34%] sm:w-[30%]">
+                                Nome
+                              </TableHead>
+                              <TableHead className="w-[26%] sm:w-[22%]">
+                                Tipo
+                              </TableHead>
+                              <TableHead className="hidden w-[18%] xl:table-cell">
                                 Local
                               </TableHead>
                               <TableHead className="hidden w-[12%] xl:table-cell">
                                 Registro
                               </TableHead>
-                              <TableHead className="w-[22%] text-right">
+                              <TableHead className="w-[40%] text-right sm:w-[28%] lg:w-[24%]">
                                 Ações
                               </TableHead>
                             </TableRow>
@@ -734,7 +745,7 @@ export default function History() {
                                   {formatDate(item.createdAt)}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  <div className="flex items-center justify-end gap-0.5">
+                                  <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
                                     <BoDetailsModal
                                       bo={item}
                                       onEdit={() => setEditingBo(item)}
@@ -748,6 +759,7 @@ export default function History() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
+                                          className="h-9 w-9 shrink-0"
                                           aria-label="Baixar PDF"
                                           onClick={() => handleExportPdf(item)}
                                           disabled={isGeneratingPdf === item.id}
@@ -768,6 +780,7 @@ export default function History() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
+                                          className="h-9 w-9 shrink-0"
                                           aria-label="Editar"
                                           onClick={() => setEditingBo(item)}
                                         >
@@ -783,6 +796,7 @@ export default function History() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
+                                          className="h-9 w-9 shrink-0"
                                           aria-label="Apagar"
                                           onClick={() => {
                                             setDeleteTargetId(
