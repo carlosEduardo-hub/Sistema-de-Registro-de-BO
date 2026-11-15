@@ -4,7 +4,7 @@ Plataforma web para **registro, consulta, edição e gestão de Boletins de Ocor
 
 Este repositório é um **monorepo** que une frontend, backend e orquestração Docker em um único projeto.
 
-**Repositório:** [carlosEduardo-hub/Sistema-de-Registro-de-BO](https://github.com/carlosEduardo-hub/Sistema-de-Registro-de-BO)
+**Produção:** [sistema-registro-bo.vercel.app](https://sistema-registro-bo.vercel.app)
 
 ---
 
