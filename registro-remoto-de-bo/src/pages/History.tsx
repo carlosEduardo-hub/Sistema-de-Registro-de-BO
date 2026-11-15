@@ -359,9 +359,7 @@ export default function History() {
                             <TableHead className="hidden w-[14%] xl:table-cell">
                               Erro
                             </TableHead>
-                            <TableHead className="w-[22%] text-right">
-                              Ações
-                            </TableHead>
+                            <TableHead className="w-[22%]">Ações</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -405,8 +403,8 @@ export default function History() {
                                   </span>
                                 )}
                               </TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
+                              <TableCell>
+                                <div className="flex flex-wrap items-center justify-start gap-1.5 sm:gap-2">
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
@@ -616,7 +614,7 @@ export default function History() {
                               <TableHead className="hidden w-[12%] xl:table-cell">
                                 Registro
                               </TableHead>
-                              <TableHead className="w-[40%] text-right sm:w-[28%] lg:w-[24%]">
+                              <TableHead className="w-[40%] sm:w-[28%] lg:w-[24%]">
                                 Ações
                               </TableHead>
                             </TableRow>
@@ -639,8 +637,8 @@ export default function History() {
                                 <TableCell className="hidden xl:table-cell">
                                   <Skeleton className="h-4 w-16" />
                                 </TableCell>
-                                <TableCell className="text-right">
-                                  <div className="flex items-center justify-end gap-1.5 sm:gap-2">
+                                <TableCell>
+                                  <div className="flex flex-wrap items-center justify-start gap-1.5 sm:gap-2">
                                     <Skeleton className="h-9 w-9" />
                                     <Skeleton className="h-9 w-9" />
                                     <Skeleton className="h-9 w-9" />
@@ -709,7 +707,7 @@ export default function History() {
                               <TableHead className="hidden w-[12%] xl:table-cell">
                                 Registro
                               </TableHead>
-                              <TableHead className="w-[40%] text-right sm:w-[28%] lg:w-[24%]">
+                              <TableHead className="w-[40%] sm:w-[28%] lg:w-[24%]">
                                 Ações
                               </TableHead>
                             </TableRow>
@@ -744,8 +742,8 @@ export default function History() {
                                 <TableCell className="hidden truncate xl:table-cell">
                                   {formatDate(item.createdAt)}
                                 </TableCell>
-                                <TableCell className="text-right">
-                                  <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
+                                <TableCell>
+                                  <div className="flex flex-wrap items-center justify-start gap-1.5 sm:gap-2">
                                     <BoDetailsModal
                                       bo={item}
                                       onEdit={() => setEditingBo(item)}

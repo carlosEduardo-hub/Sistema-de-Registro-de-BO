@@ -7,6 +7,11 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { RegisterBo } from "@/types/registerBo";
 import {
   FileText,
@@ -58,16 +63,23 @@ export const BoDetailsModal = ({
 }: BoDetailsModalProps) => {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 shrink-0"
-          aria-label="Ver detalhes"
-        >
-          <FileText className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 shrink-0"
+              aria-label="Ver detalhes"
+            >
+              <FileText className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+        </TooltipTrigger>
+        <TooltipContent>
+          <span>Ver detalhes</span>
+        </TooltipContent>
+      </Tooltip>
       <DialogContent className="flex max-h-[min(92dvh,920px)] w-[calc(100%-1.5rem)] flex-col overflow-hidden p-0 sm:max-w-3xl sm:p-0">
         <DialogHeader className="shrink-0 space-y-1.5 border-b px-4 py-4 text-left sm:px-6">
           <DialogTitle className="flex items-center gap-2 text-lg text-gray-800 sm:text-xl">
