@@ -19,6 +19,7 @@ Este repositório é um **monorepo** que une frontend, backend e orquestração 
 - [Pré-requisitos](#pré-requisitos)
 - [Configuração de ambiente](#configuração-de-ambiente)
 - [Como rodar (Docker Compose)](#como-rodar-docker-compose)
+- [Deploy na Vercel (sem Docker)](#deploy-na-vercel-sem-docker)
 - [Seed de dados de exemplo](#seed-de-dados-de-exemplo)
 - [API (visão geral)](#api-visão-geral)
 - [Identificadores de teste (auditoria)](#identificadores-de-teste-auditoria)
@@ -160,8 +161,9 @@ No Docker Compose:
 
 ### Infra
 
-- Docker Compose (db + backend + frontend)
-- Imagem Postgres Bitnami 13
+- Docker Compose (db + backend + frontend) para desenvolvimento local
+- Deploy na Vercel via Services (Vite + Fastify) sem Docker
+- Imagem Postgres Bitnami 13 (local); Neon/Marketplace em produção
 
 ---
 
@@ -170,6 +172,7 @@ No Docker Compose:
 ```
 .
 ├── docker-compose.yml          # Sobe db, backend e frontend
+├── vercel.json                 # Services: frontend + backend na Vercel
 ├── README.md
 ├── registro-remoto-de-bo/      # Frontend
 │   ├── .env.example
@@ -257,6 +260,65 @@ docker compose logs -f db
 ```
 
 Na primeira subida o Postgres pode demorar (volume local). O Compose espera o healthcheck do banco antes de iniciar o backend.
+
+---
+
+## Deploy na Vercel (sem Docker)
+
+O monorepo sobe como **um único projeto** com [Vercel Services](https://vercel.com/docs/services) (beta):
+
+| Service | Pasta | Runtime |
+|---------|-------|---------|
+| `frontend` | `registro-remoto-de-bo/` | Vite |
+| `backend` | `transcricao/` | Fastify (Functions) |
+
+Roteamento (em `vercel.json`):
+
+- `/api/*` → backend (o prefixo `/api` é removido antes de chegar nas rotas Fastify)
+- demais paths → frontend (SPA com fallback para `index.html`)
+
+O Postgres do Compose **não** vai para a Vercel. Use um banco gerenciado (recomendado: **Neon** no Marketplace).
+
+### Passo a passo
+
+1. Conta na [Vercel](https://vercel.com) e CLI atualizada (`npm i -g vercel`).
+2. Na raiz do repo:
+   ```bash
+   vercel link
+   ```
+3. Provisionar Postgres e conectar ao projeto (injeta `DATABASE_URL`):
+   ```bash
+   vercel integration add neon
+   ```
+   Ou pelo dashboard: **Storage → Neon → Connect Project**.
+4. Definir secrets no projeto (Production + Preview):
+   - `GEMINI_API_KEY`
+   - `RESEND_API_KEY`
+   - `EMAIL_FROM` (opcional)
+   - `TELEGRAM_BOT_TOKEN` / `TELEGRAM_BOT_USERNAME` (opcional)
+5. Rodar migrations no banco de produção (uma vez, com a URL do Neon):
+   ```bash
+   cd transcricao
+   DATABASE_URL="postgresql://..." npm run db:migrate
+   ```
+6. Deploy:
+   ```bash
+   vercel          # preview
+   vercel --prod   # produção
+   ```
+   Ou conecte o GitHub e deixe o deploy automático em cada push.
+
+### Telegram na Vercel
+
+Polling contínuo fica **desligado** quando `VERCEL` está definido. Use o webhook:
+
+`https://<seu-dominio>/api/telegram/webhook`
+
+### Limites a ter em mente
+
+- Body de request nas Functions: **~4,5 MB** (áudios grandes podem falhar; o Compose local aceita mais).
+- Contatos Telegram em memória não sobrevivem entre instâncias — webhook + storage externo seriam o próximo passo se precisar disso em produção.
+- Dev local unificado: `vercel dev` (ou continue com Docker Compose).
 
 ---
 

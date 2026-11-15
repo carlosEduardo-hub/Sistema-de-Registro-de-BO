@@ -20,7 +20,8 @@ const app = fastify({
   logger: true,
   bodyLimit: 104857600,
 }).withTypeProvider<ZodTypeProvider>();
-const PORT = 3333;
+
+const PORT = Number.parseInt(process.env.PORT ?? "3333", 10);
 
 app.register(fastifyCors);
 
@@ -36,7 +37,16 @@ app.register(telegramRoute);
 
 const start = async () => {
   try {
-    startTelegramPolling();
+    // Polling contínuo não funciona bem em Functions (scale-to-zero).
+    // Na Vercel use o webhook POST /telegram/webhook.
+    if (process.env.VERCEL) {
+      app.log.info(
+        "Telegram polling desabilitado na Vercel; configure o webhook.",
+      );
+    } else {
+      startTelegramPolling();
+    }
+
     await app.listen({ port: PORT, host: "0.0.0.0" });
     app.log.info(`🚀 Servidor rodando em http://localhost:${PORT}`);
   } catch (err) {
@@ -44,5 +54,23 @@ const start = async () => {
     process.exit(1);
   }
 };
+
+const shutdown = async (signal: string) => {
+  app.log.info(`${signal} recebido; encerrando...`);
+  try {
+    await app.close();
+    process.exit(0);
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+};
+
+process.on("SIGTERM", () => {
+  void shutdown("SIGTERM");
+});
+process.on("SIGINT", () => {
+  void shutdown("SIGINT");
+});
 
 start();
