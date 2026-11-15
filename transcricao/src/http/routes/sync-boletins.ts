@@ -1,0 +1,191 @@
+import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
+import { z } from 'zod'
+import { db } from '../../db/connection.ts'
+import { registerBo } from '../../db/schema/register_bo.ts'
+import { eq } from 'drizzle-orm'
+import { generatePdf } from '../../services/pdf.ts'
+import { sendBoConfirmationEmail } from '../../services/email.ts'
+import { getTelegramDeepLinkForPhone } from '../../services/telegram.ts'
+
+// Endpoint para sincronização de B.Os offline
+export const syncBoletinsRoute: FastifyPluginCallbackZod = (app) => {
+  app.post(
+    '/sync/boletins',
+    {
+      schema: {
+        body: z.array(
+          z.object({
+            localId: z.string().min(1),
+            date_and_time_of_event: z.string().datetime(),
+            place_of_the_fact: z.string(),
+            type_of_occurrence: z.string(),
+            full_name: z.string(),
+            cpf_or_rg: z.string().optional(),
+            // Aceita YYYY-MM-DD, ISO datetime ou string vazia para limpar
+            date_of_birth: z
+              .union([
+                z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+                z.string().datetime(),
+                z.literal("")
+              ])
+              .optional(),
+            gender: z.string().optional(),
+            nationality: z.string().optional(),
+            marital_status: z.string().optional(),
+            profession: z.string().optional(),
+            full_address: z.string().optional(),
+            phone_or_cell_phone: z.string().optional(),
+            // E-mail válido ou string vazia para remover
+            email: z.union([z.string().email(), z.literal("")]).optional(),
+            relationship_with_the_fact: z.string(),
+            transcription: z.string().optional(),
+            collected_at: z.string().datetime().optional(),
+          }),
+        ),
+      },
+    },
+    async (request, reply) => {
+      // Autenticação simples via header Authorization (JWT real pode ser adicionado depois)
+      const auth = request.headers['authorization']
+      if (!auth || !auth.toString().trim().length) {
+        return reply.status(401).send({ error: 'Unauthorized' })
+      }
+
+      const items = request.body as Array<any>
+
+      const synced: Array<{ localId: string; serverId: string }> = []
+      const failed: Array<{ localId: string; error: string }> = []
+
+      for (const item of items) {
+        const {
+          localId,
+          date_and_time_of_event,
+          place_of_the_fact,
+          type_of_occurrence,
+          full_name,
+          cpf_or_rg,
+          date_of_birth,
+          gender,
+          nationality,
+          marital_status,
+          profession,
+          full_address,
+          phone_or_cell_phone,
+          email,
+          relationship_with_the_fact,
+          transcription,
+          collected_at,
+        } = item
+
+        try {
+          // Se já existe um B.O. com o mesmo localId, apenas retorna o mapeamento
+          if (localId) {
+            const existing = await db
+              .select({ id: registerBo.id })
+              .from(registerBo)
+              .where(eq(registerBo.localId, localId))
+
+            if (existing.length > 0) {
+              synced.push({ localId, serverId: existing[0].id })
+              continue
+            }
+          }
+
+          // Sanitização: converter strings vazias em null para campos opcionais,
+          // normalizar data de nascimento (ISO -> YYYY-MM-DD)
+          const normalizedDOB =
+            typeof date_of_birth === 'string'
+              ? (date_of_birth.includes('T')
+                  ? date_of_birth.slice(0, 10)
+                  : date_of_birth)
+              : undefined
+
+          const sanitizedEmail = email === '' ? null : email
+
+          const values = {
+            date_and_time_of_event: new Date(date_and_time_of_event),
+            place_of_the_fact,
+            type_of_occurrence,
+            full_name,
+            cpf_or_rg: cpf_or_rg === '' ? null : cpf_or_rg,
+            // Em nosso schema, 'date_of_birth' é 'date' (string no Drizzle)
+            // Portanto, usamos string YYYY-MM-DD ou null
+            date_of_birth:
+              normalizedDOB === undefined
+                ? undefined
+                : normalizedDOB === ''
+                ? null
+                : normalizedDOB,
+            gender: gender === '' ? null : gender,
+            nationality: nationality === '' ? null : nationality,
+            marital_status: marital_status === '' ? null : marital_status,
+            profession: profession === '' ? null : profession,
+            full_address: full_address === '' ? null : full_address,
+            phone_or_cell_phone: phone_or_cell_phone === '' ? null : phone_or_cell_phone,
+            email: sanitizedEmail,
+            relationship_with_the_fact,
+            transcription: transcription === '' ? null : transcription,
+            localId,
+            collectedAt: collected_at ? new Date(collected_at) : undefined,
+            receivedAt: new Date(),
+            syncStatus: 'synced',
+          }
+
+          const [created] = await db
+            .insert(registerBo)
+            .values(values)
+            .returning({ id: registerBo.id })
+
+          const serverId = created.id
+          synced.push({ localId, serverId })
+
+          if (sanitizedEmail) {
+            const pdfData = {
+              id: serverId,
+              date_and_time_of_event: values.date_and_time_of_event,
+              place_of_the_fact,
+              type_of_occurrence,
+              full_name,
+              cpf_or_rg,
+              date_of_birth: values.date_of_birth,
+              gender,
+              nationality,
+              marital_status,
+              profession,
+              full_address,
+              phone_or_cell_phone,
+              email: sanitizedEmail,
+              relationship_with_the_fact,
+              transcription,
+              created_at: new Date(),
+            }
+
+            try {
+              const pdfBuffer = await generatePdf(pdfData)
+              const telegramDeepLink = getTelegramDeepLinkForPhone(
+                phone_or_cell_phone,
+              )
+              const emailResult = await sendBoConfirmationEmail(
+                sanitizedEmail,
+                full_name,
+                serverId,
+                pdfBuffer,
+                telegramDeepLink,
+              )
+
+              if (!emailResult.success) {
+                app.log.error(`Erro ao enviar e-mail para ${email}:`, emailResult.error)
+              }
+            } catch (err) {
+              app.log.error(`Erro ao gerar/enviar PDF para ${email}:`, err)
+            }
+          }
+        } catch (err) {
+          failed.push({ localId, error: err instanceof Error ? err.message : 'Erro desconhecido' })
+        }
+      }
+
+      return reply.status(200).send({ synced, failed })
+    },
+  )
+}

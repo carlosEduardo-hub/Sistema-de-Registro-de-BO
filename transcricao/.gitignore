@@ -1,0 +1,16 @@
+node_modules/
+
+# Secrets — versionar apenas os *.example
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+GEMINI.MD
+gemini.md
+
+/docker/postgres_data/
+coverage/
+dist/
+*.log
+.DS_Store

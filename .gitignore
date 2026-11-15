@@ -1,0 +1,37 @@
+# Dependências
+node_modules/
+
+# Ambientes (nunca versionar secrets)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Dados locais / Docker
+transcricao/docker/postgres_data/
+*.log
+
+# Build / cache
+dist/
+dist-ssr/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# IDE / SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.sw?
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Misc local
+*.local
+GEMINI.MD
+gemini.md
