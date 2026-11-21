@@ -26,6 +26,7 @@ import {
 import { HourlyOccurrencesAreaChart } from "@/components/reports/HourlyOccurrencesAreaChart";
 import { MonthlyBosBarChart } from "@/components/reports/MonthlyBosBarChart";
 import { TypeDistributionPieChart } from "@/components/reports/TypeDistributionPieChart";
+import { TypeSummaryBarChart } from "@/components/reports/TypeSummaryBarChart";
 import { WeeklyTrendLineChart } from "@/components/reports/WeeklyTrendLineChart";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
 import { useQuery } from "@tanstack/react-query";
@@ -612,7 +613,10 @@ export default function Reports() {
                   </CardTitle>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent className="space-y-6">
+                  {processedData.typeData.length > 0 && (
+                    <TypeSummaryBarChart data={processedData.typeData} />
+                  )}
                   <div className="space-y-4">
                     {processedData.typeData.length > 0 ? (
                       processedData.typeData.map((item, index) => {
