@@ -613,75 +613,14 @@ export default function Reports() {
                   </CardTitle>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
-                  {processedData.typeData.length > 0 && (
+                <CardContent>
+                  {processedData.typeData.length > 0 ? (
                     <TypeSummaryBarChart data={processedData.typeData} />
+                  ) : (
+                    <div className="text-center text-gray-500 py-8">
+                      Nenhum dado disponível para o período selecionado
+                    </div>
                   )}
-                  <div className="space-y-4">
-                    {processedData.typeData.length > 0 ? (
-                      processedData.typeData.map((item, index) => {
-                        const total = processedData.typeData.reduce(
-                          (acc, curr) => acc + curr.value,
-                          0,
-                        );
-                        const percent = ((item.value / total) * 100).toFixed(1);
-
-                        return (
-                          <div
-                            key={index}
-                            className="p-4 rounded-xl bg-white border hover:shadow-md transition-all"
-                          >
-                            {/* Linha principal */}
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-3">
-                                {/* ranking */}
-                                <span className="text-sm font-semibold text-gray-400 w-6">
-                                  #{index + 1}
-                                </span>
-
-                                {/* bolinha */}
-                                <div
-                                  className="w-3 h-3 rounded-full"
-                                  style={{ backgroundColor: item.color }}
-                                />
-
-                                {/* nome */}
-                                <span className="font-medium text-gray-700">
-                                  {item.name}
-                                </span>
-                              </div>
-
-                              {/* valores */}
-                              <div className="flex items-center gap-3">
-                                <span className="text-lg font-bold text-gray-900">
-                                  {item.value}
-                                </span>
-
-                                <span className="text-sm text-gray-500">
-                                  {percent}%
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* barra visual */}
-                            <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                              <div
-                                className="h-full rounded-full transition-all duration-500"
-                                style={{
-                                  width: `${percent}%`,
-                                  backgroundColor: item.color,
-                                }}
-                              />
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div className="text-center text-gray-500 py-8">
-                        Nenhum dado disponível para o período selecionado
-                      </div>
-                    )}
-                  </div>
                 </CardContent>
               </Card>
             )}

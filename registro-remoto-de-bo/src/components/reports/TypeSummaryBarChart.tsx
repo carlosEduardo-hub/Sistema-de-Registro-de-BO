@@ -14,6 +14,7 @@ export function TypeSummaryBarChart({ data }: TypeSummaryBarChartProps) {
     return null;
   }
 
+  const total = data.reduce((acc, item) => acc + item.value, 0);
   const heightRatio = Math.min(8, Math.max(1.8, data.length * 0.48)).toFixed(2);
 
   return (
@@ -28,13 +29,16 @@ export function TypeSummaryBarChart({ data }: TypeSummaryBarChartProps) {
       <Bar dataKey="value" fill="var(--chart-line-primary)" lineCap="round" />
       <BarYAxis />
       <ChartTooltip
-        rows={(point) => [
-          {
-            color: String(point.color ?? "var(--chart-line-primary)"),
-            label: "Ocorrências",
-            value: Number(point.value ?? 0),
-          },
-        ]}
+        rows={(point) => {
+          const value = Number(point.value ?? 0);
+          const percent = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+          const color = String(point.color ?? "var(--chart-line-primary)");
+
+          return [
+            { color, label: "Ocorrências", value },
+            { color, label: "Percentual", value: `${percent}%` },
+          ];
+        }}
         showDatePill={false}
       />
     </BarChart>
