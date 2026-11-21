@@ -15,22 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-} from "recharts";
-import {
   BarChart3,
   PieChart as PieChartIcon,
   TrendingUp,
@@ -39,6 +23,10 @@ import {
   Loader2,
   Clock,
 } from "lucide-react";
+import { HourlyOccurrencesAreaChart } from "@/components/reports/HourlyOccurrencesAreaChart";
+import { MonthlyBosBarChart } from "@/components/reports/MonthlyBosBarChart";
+import { TypeDistributionPieChart } from "@/components/reports/TypeDistributionPieChart";
+import { WeeklyTrendLineChart } from "@/components/reports/WeeklyTrendLineChart";
 import { NetworkStatusIndicator } from "@/components/NetworkStatusIndicator";
 import { useQuery } from "@tanstack/react-query";
 import { getAllBos } from "@/api/registerBoAPI";
@@ -562,25 +550,7 @@ export default function Reports() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={processedData.monthlyData}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip
-                          contentStyle={{
-                            borderRadius: "10px",
-                            border: "none",
-                            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                          }}
-                        />
-                        <Bar
-                          dataKey="total"
-                          fill="#2563eb"
-                          radius={[8, 8, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
+                    <MonthlyBosBarChart data={processedData.monthlyData} />
                   </CardContent>
                 </Card>
 
@@ -593,58 +563,8 @@ export default function Reports() {
                     </CardTitle>
                   </CardHeader>
 
-                  <CardContent className="flex flex-col lg:flex-row items-center gap-6">
-                    {/* Gráfico */}
-                    <div className="w-full lg:w-1/2 h-[300px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={processedData.typeData}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={90}
-                            paddingAngle={4}
-                          >
-                            {processedData.typeData.map((entry, index) => (
-                              <Cell key={index} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <Tooltip
-                            contentStyle={{
-                              borderRadius: "10px",
-                              border: "none",
-                              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                            }}
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-
-                    {/* Legenda */}
-                    <div className="w-full lg:w-1/2 max-h-[250px] overflow-y-auto space-y-3 pr-2">
-                      {processedData.typeData.map((item, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 rounded-lg px-3 py-2 transition"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span
-                              className="w-3 h-3 rounded-full"
-                              style={{ backgroundColor: item.color }}
-                            />
-                            <span className="text-sm font-medium text-gray-700">
-                              {item.name}
-                            </span>
-                          </div>
-                          <span className="text-sm font-semibold text-gray-900">
-                            {item.value}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                  <CardContent>
+                    <TypeDistributionPieChart data={processedData.typeData} />
                   </CardContent>
                 </Card>
 
@@ -657,22 +577,7 @@ export default function Reports() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={processedData.dailyTrendData}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                        <XAxis dataKey="day" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line
-                          type="monotone"
-                          dataKey="occurrences"
-                          stroke="#f59e0b"
-                          strokeWidth={3}
-                          dot={{ r: 5 }}
-                          activeDot={{ r: 7 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+                    <WeeklyTrendLineChart data={processedData.dailyTrendData} />
                   </CardContent>
                 </Card>
 
@@ -685,41 +590,7 @@ export default function Reports() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart data={processedData.hourlyData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="hour" />
-                        <YAxis />
-                        <Tooltip />
-                        <Area
-                          type="monotone"
-                          dataKey="count"
-                          stroke="#8b5cf6"
-                          fill="url(#colorHours)"
-                          strokeWidth={3}
-                        />
-                        <defs>
-                          <linearGradient
-                            id="colorHours"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="#8b5cf6"
-                              stopOpacity={0.8}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor="#8b5cf6"
-                              stopOpacity={0}
-                            />
-                          </linearGradient>
-                        </defs>
-                      </AreaChart>
-                    </ResponsiveContainer>
+                    <HourlyOccurrencesAreaChart data={processedData.hourlyData} />
                   </CardContent>
                 </Card>
               </div>

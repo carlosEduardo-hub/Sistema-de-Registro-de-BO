@@ -73,6 +73,17 @@ export default {
 					'red-light': '#f87171',
 					green: '#16a34a',
 					'green-light': '#4ade80'
+				},
+				"chart-label": "var(--chart-label)",
+				"chart-tooltip-background": "var(--chart-tooltip-background)",
+				"chart-tooltip-foreground": "var(--chart-tooltip-foreground)",
+				"chart-tooltip-muted": "var(--chart-tooltip-muted)",
+				legend: {
+					DEFAULT: "var(--legend)",
+					foreground: "var(--legend-foreground)",
+					muted: "var(--legend-muted)",
+					"muted-foreground": "var(--legend-muted-foreground)",
+					track: "var(--legend-track)",
 				}
 			},
 			borderRadius: {

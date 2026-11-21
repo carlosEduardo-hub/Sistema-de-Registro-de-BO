@@ -90,11 +90,11 @@
 
     --chart-brush-border: var(--chart-grid);
 
-    --chart-tooltip-background: var(--popover);
+    --chart-tooltip-background: hsl(var(--popover));
 
-    --chart-tooltip-foreground: var(--popover-foreground);
+    --chart-tooltip-foreground: hsl(var(--popover-foreground));
 
-    --chart-tooltip-muted: var(--muted-foreground);
+    --chart-tooltip-muted: hsl(var(--muted-foreground));
 
     --chart-marker-background: oklch(0.97 0.005 260);
 

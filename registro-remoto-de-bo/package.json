@@ -13,7 +13,6 @@
   "dependencies": {
     "@ai-sdk/google": "^2.0.14",
     "@ai-sdk/react": "^2.0.44",
-    "@base-ui/react": "^1.9.0",
     "@hookform/resolvers": "^3.9.0",
     "@number-flow/react": "^0.6.2",
     "@radix-ui/react-accordion": "^1.2.0",
